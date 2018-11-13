@@ -19,6 +19,7 @@ def getVersionName = { ->
     return result
 }
 
+//test comit
 android {
     signingConfigs {
         config {
