@@ -36,7 +36,7 @@ android {
         versionCode 1
         versionName "${getVersionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        setProperty("archivesBaseName", "MyAndroidApp-" + versionName)
+        setProperty("archivesBaseName", ${applicationId} + "-" + versionName)
     }
     buildTypes {
         release {
@@ -51,11 +51,8 @@ android {
                 develop {
                     dimension "version"
                     versionNameSuffix "-dev"
-
                 }
-
                 full {
-
                     dimension "version"
                     versionNameSuffix "-rel"
                 }
