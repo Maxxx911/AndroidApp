@@ -7,15 +7,16 @@ def getVersionName = { ->
         standardOutput = stdout
     }
     stdout = stdout.toString().trim()
-    def split_stdout = stdout.split('\\.').toList()
-    Integer third_v = split_stdout.pop().toInteger() + 1
-    String result =  split_stdout.get(0) + "." + split_stdout.get(1) + "." + third_v.toString()
-    exec {
-        commandLine 'git', 'tag', result
-    }
-    exec {
-        commandLine('git', 'tag', '-d', stdout)
-    }
+    def split_stdout = stdout.split('-').toList()
+    String result =  split_stdout.get(0) + "." + split_stdout.get(1)
+    return result
+
+}
+
+def getVersionCode = {->
+    String version = getVersionName
+    def split_version = version.split('\\.').toList()
+    Integer result = split_version.get(0).toInteger() * 1000 + split_version.get(1).toInteger() * 100 + split_version.get(3).toInteger() * 10
     return result
 }
 
@@ -33,10 +34,10 @@ android {
         applicationId "com.maxrescuerinc.myandroidapplication"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 1
+        versionCode "${getVersionCode}"
         versionName "${getVersionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        setProperty("archivesBaseName", ${applicationId} + "-" + versionName)
+        setProperty("archivesBaseName", applicationId + "-v" + versionName)
     }
     buildTypes {
         release {
