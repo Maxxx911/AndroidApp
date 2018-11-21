@@ -10,15 +10,28 @@ def getVersionName = { ->
     def split_stdout = stdout.split('-').toList()
     String result =  split_stdout.get(0) + "." + split_stdout.get(1)
     return result
-
 }
 
 def getVersionCode = {->
-    String version = getVersionName
-    def split_version = version.split('\\.').toList()
-    Integer result = split_version.get(0).toInteger() * 1000 + split_version.get(1).toInteger() * 100 + split_version.get(3).toInteger() * 10
-    return result
+    def versionPropsFile = file('version.properties')
+    if (versionPropsFile.canRead()){
+
+        def  versionProps = new Properties()
+        //throw new GradleException("NORM")
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def code = versionProps['Version_Code'].toInteger() + 1
+
+        versionProps['Version_Code'] = code.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+        return  code
+    }
+    else {
+        throw new GradleException("CUKA BLYAD")
+    }
 }
+
+
 
 android {
     signingConfigs {
@@ -30,11 +43,12 @@ android {
         }
     }
     compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.maxrescuerinc.myandroidapplication"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode "${getVersionCode}"
+        versionCode getVersionCode()
         versionName "${getVersionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", applicationId + "-v" + versionName)
