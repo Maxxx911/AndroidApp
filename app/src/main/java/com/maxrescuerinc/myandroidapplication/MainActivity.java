@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     public void ShowIMEI() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
