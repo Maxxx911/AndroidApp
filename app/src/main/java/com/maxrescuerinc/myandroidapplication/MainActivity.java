@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView = findViewById(R.id.bottom_navigation);
 
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         NavigationUI.setupWithNavController(BottomNavigationView, Navigation.findNavController(
                 MainActivity.this, R.id.my_nav_host_fragment));
         if (!getResources().getBoolean(R.bool.dev_mode)) {
