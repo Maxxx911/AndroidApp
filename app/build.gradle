@@ -8,15 +8,15 @@ def getVersionName = { ->
     }
     stdout = stdout.toString().trim()
     def split_stdout = stdout.split('-').toList()
-    String result =  split_stdout.get(0) + "." + split_stdout.get(1)
+    String result = split_stdout.get(0) + "." + split_stdout.get(1)
     return result
 }
 
-def getVersionCode = {->
+def getVersionCode = { ->
     def versionPropsFile = file('version.properties')
-    if (versionPropsFile.canRead()){
+    if (versionPropsFile.canRead()) {
 
-        def  versionProps = new Properties()
+        def versionProps = new Properties()
         //throw new GradleException("NORM")
 
         versionProps.load(new FileInputStream(versionPropsFile))
@@ -24,9 +24,8 @@ def getVersionCode = {->
 
         versionProps['Version_Code'] = code.toString()
         versionProps.store(versionPropsFile.newWriter(), null)
-        return  code
-    }
-    else {
+        return code
+    } else {
         throw new GradleException("CUKA BLYAD")
     }
 }
@@ -75,11 +74,18 @@ android {
 }
 
 dependencies {
+    def nav_version = "1.0.0-alpha08"
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation "android.arch.navigation:navigation-fragment:$nav_version" // use -ktx for Kotlin
+    implementation "android.arch.navigation:navigation-ui:$nav_version"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
-    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    implementation 'com.github.satyan:sugar:1.4'
+    androidTestImplementation 'androidx.test:runner:1.1.1-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-beta01'
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }

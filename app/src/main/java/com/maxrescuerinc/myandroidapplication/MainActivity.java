@@ -1,88 +1,66 @@
 package com.maxrescuerinc.myandroidapplication;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     final private int MY_PERMISSION_ACCESS = 123;
+    private BottomNavigationView BottomNavigationView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(!getResources().getBoolean(R.bool.dev_mode)) {
+        BottomNavigationView = findViewById(R.id.bottom_navigation);
+
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationUI.setupWithNavController(BottomNavigationView, Navigation.findNavController(
+                MainActivity.this, R.id.my_nav_host_fragment));
+        if (!getResources().getBoolean(R.bool.dev_mode)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_PHONE_STATE)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle(R.string.titleWarning)
-                    .setMessage(R.string.showIMIEPermission)
-                        .setCancelable(false)
-                        .setNegativeButton(R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        ActivityCompat.requestPermissions(MainActivity.this,
-                                                new String[]{Manifest.permission.READ_PHONE_STATE},
-                                                MY_PERMISSION_ACCESS);
-                                        dialog.cancel();
-                                    }
-                                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-            else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_PHONE_STATE},
-                        MY_PERMISSION_ACCESS); }
-        }
-        else {
-            ShowIMEI();
-            }
-        }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case(MY_PERMISSION_ACCESS): {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ShowIMEI();
-                 }else
-                 {
-                    TextView textView = findViewById(R.id.textView3);
-                    textView.setText("No");
-                     }
-
-            }
-        }
     }
 
-    public void ShowIMEI() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_PHONE_STATE},  MY_PERMISSION_ACCESS);
-        } else
-            {
-            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            String imei = telephonyManager.getDeviceId();
-            TextView textView = findViewById(R.id.textView3);
-            textView.setText(imei);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.right_menu, menu);
+
+
+        return true;
+    }
+
+    //
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.toAboutPage) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         }
+        return true;
+
     }
 }
