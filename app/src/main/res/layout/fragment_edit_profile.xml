@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        tools:context=".EditProfileFragment">
+        tools:context="Fragments.Home.EditProfileFragment">
 
 
         <LinearLayout
@@ -20,7 +20,7 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
 
-                android:id="@+id/imageViewEdit"
+                android:id="@+id/imageViewHomeEditPerson"
                 android:layout_width="202dp"
                 android:layout_height="202dp"
                 android:layout_gravity="center"
@@ -57,7 +57,7 @@
                 android:text="@string/last_name" />
 
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/editTextLastNameHomeEditPerson"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
 
@@ -77,7 +77,7 @@
                 android:textAlignment="center" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/editTextNameHomeEditPerson"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -95,7 +95,7 @@
                 android:text="@string/email" />
 
             <EditText
-                android:id="@+id/editText5"
+                android:id="@+id/editTextEmailHomeEditPerson"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:ems="10"
@@ -113,7 +113,7 @@
                 android:text="@string/phone_number" />
 
             <EditText
-                android:id="@+id/editText6"
+                android:id="@+id/editTextPhoneNumberHomeEditPerson"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:ems="10"
@@ -123,7 +123,7 @@
                 android:textAlignment="viewStart" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonHomePersonEditSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="232dp"

@@ -5,44 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Activites.MainActivity">
 
-    <!--<TextView-->
-        <!--android:id="@+id/textView3"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="126dp"-->
-        <!--android:layout_marginTop="208dp"-->
-        <!--android:text="TextView"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppThemeWhite.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar1"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppThemeWhite.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/my_nav_host_fragment"
+        android:id="@+id/my_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        app:navGraph="@navigation/nav_graph"
+        app:navGraph="@navigation/reg_nav_graph"
         app:defaultNavHost="true"
         />
-    <!--<com.google.android.material.appbar.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-       <!--<androidx.appcompat.widget.Toolbar-->
-           <!--android:layout_width="wrap_content"-->
-           <!--android:layout_height="match_parent">-->
 
-
-       <!--</androidx.appcompat.widget.Toolbar>-->
-        <!--</com.google.android.material.appbar.AppBarLayout>-->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:background="@color/colorWhite"
-        app:menu="@menu/bottom_navigation_menu"
-        app:layout_behavior="com.maxrescuerinc.myandroidapplication.BottomNavigationBehavior"
-        />
 </RelativeLayout>

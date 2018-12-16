@@ -1,0 +1,160 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    tools:context="Fragments.Authorization.RegisterFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="250dp"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+
+            android:id="@+id/imageViewRegisterEdit"
+            android:layout_width="202dp"
+            android:layout_height="202dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="12dp"
+            tools:src="@tools:sample/avatars[4]"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonRegisterMakePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/make_photo" />
+
+            <Button
+                android:id="@+id/buttonRegisterChosePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/choose_photo" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/last_name" />
+
+        <EditText
+            android:id="@+id/editRegisterLastName"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+
+            android:ems="10"
+            android:hint="@string/hint_last_name"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:id="@+id/textView26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/name"
+
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/editRegisterName"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:hint="@string/hint_name"
+            android:inputType="textPersonName"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/email" />
+
+        <EditText
+            android:id="@+id/editRegisterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:ems="10"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:id="@+id/textView28"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/phone_number" />
+
+        <EditText
+            android:id="@+id/editRegisterPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:ems="10"
+            android:hint="@string/hint_phone_number"
+            android:inputType="phone"
+            android:singleLine="true"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/editRegisterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password_confirm"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/editRegisterPasswordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/buttonRegisterRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="232dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="80dp"
+            android:text="@string/register"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Base.TextAppearance.MaterialComponents.Button" />
+    </LinearLayout>
+</ScrollView>

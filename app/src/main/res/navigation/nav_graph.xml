@@ -5,11 +5,11 @@
     app:startDestination="@id/welcomeFragment">
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.maxrescuerinc.myandroidapplication.WelcomeFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.WelcomeFragment"
         android:label="WelcomeFragment" ></fragment>
     <fragment
         android:id="@+id/personFragment2"
-        android:name="com.maxrescuerinc.myandroidapplication.PersonFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.PersonFragment"
         android:label="PersonFragment" >
         <action
             android:id="@+id/action_personFragment2_to_editProfileFragment"
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.maxrescuerinc.myandroidapplication.EditProfileFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="com.maxrescuerinc.myandroidapplication.AboutFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
 </navigation>
