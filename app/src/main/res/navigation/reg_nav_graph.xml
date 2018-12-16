@@ -22,10 +22,18 @@
         <action
             android:id="@+id/action_registerFragment_to_logInFragment"
             app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_selectedImageFragment"
+            app:destination="@id/selectedImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment2"
         android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/selectedImageFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Authorization.SelectedImageFragment"
+        android:label="fragment_selected_image"
+        tools:layout="@layout/fragment_selected_image" />
 </navigation>

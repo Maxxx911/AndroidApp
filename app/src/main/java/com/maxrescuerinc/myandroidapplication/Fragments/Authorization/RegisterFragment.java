@@ -1,12 +1,15 @@
 package com.maxrescuerinc.myandroidapplication.Fragments.Authorization;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +24,9 @@ import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
 import com.orm.SugarRecord;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,20 +50,18 @@ public class RegisterFragment extends Fragment {
     private EditText PhoneNumber = null;
     private EditText Password = null;
     private EditText PasswordConfirm = null;
-    private ImageView PersonImage = null;
-    private Uri selectedImage= null;
-    private String ImagePath = null;
     private View RegisterFormView = null;
+    private SharedPreferences setting;
+    private final String APP_PREFERENCES_CURRENT_USER_ID = "current_user_id";
+    private final String APP_PREFERENCES = "current_user_setting";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         RegisterFormView = inflater.inflate(R.layout.fragment_register, container, false);
+        setting = Objects.requireNonNull(getContext()).getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
         findAllFields();
-        PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
-        signUpMakePhoto();
-        signUpChoosePhoto();
         signUpRegister();
         return RegisterFormView;
     }
@@ -72,22 +76,15 @@ public class RegisterFragment extends Fragment {
                         Password.getText().toString(), PasswordConfirm.getText().toString())){
                     List<User> users = SugarRecord.find(User.class,"Email = ?",Email.getText().toString());
                     if(users.isEmpty()){
-                        if(ImagePath != null){
-                            User userModel = new User(LastName.getText().toString(),
-                                    Name.getText().toString(), Email.getText().toString(),
-                                    PhoneNumber.getText().toString(), Password.getText().toString(), ImagePath);
-                            userModel.save();
-                            Navigation.findNavController(RegisterFormView).navigate(R.id.action_registerFragment_to_logInFragment);
-                            showToast(R.string.register_successful);
-                        }
-                        else {
                             User userModel = new User(LastName.getText().toString(),
                                     Name.getText().toString(), Email.getText().toString(),
                                     PhoneNumber.getText().toString(), Password.getText().toString());
                             userModel.save();
-                            Navigation.findNavController(RegisterFormView).navigate(R.id.action_registerFragment_to_logInFragment);
+                        SharedPreferences.Editor editor = setting.edit();
+                        editor.putLong(APP_PREFERENCES_CURRENT_USER_ID,userModel.getId());
+                        editor.apply();
+                            Navigation.findNavController(RegisterFormView).navigate(R.id.action_registerFragment_to_selectedImageFragment);
                             showToast(R.string.register_successful);
-                        }
                     }
                     else{
                         showToast(R.string.user_error);
@@ -100,34 +97,8 @@ public class RegisterFragment extends Fragment {
         });
     }
 
-    private void signUpChoosePhoto(){
-        Button button = RegisterFormView.findViewById(R.id.buttonRegisterChosePhoto);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent photoIntent = new Intent(Intent.ACTION_PICK);
-                photoIntent.setType("image/*");
-                startActivityForResult(photoIntent, LOAD_PHOTO_REQUEST);
-            }
-        });
-    }
 
-    private void signUpMakePhoto(){
-        Button button = RegisterFormView.findViewById(R.id.buttonRegisterMakePhoto);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()),Manifest.permission.CAMERA)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
-                }
-                else {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},MAKE_PHOTO_REQUEST);
-                }
-            }
-        });
-    }
+
 
     private void findAllFields(){
         LastName = RegisterFormView.findViewById(R.id.editRegisterLastName);
@@ -136,7 +107,6 @@ public class RegisterFragment extends Fragment {
         PhoneNumber = RegisterFormView.findViewById(R.id.editRegisterPhoneNumber);
         Password = RegisterFormView.findViewById(R.id.editRegisterPassword);
         PasswordConfirm = RegisterFormView.findViewById(R.id.editRegisterPasswordConfirm);
-        PersonImage = RegisterFormView.findViewById(R.id.imageViewRegisterEdit);
     }
 
     private void showToast(Integer text) {
@@ -218,20 +188,4 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LOAD_PHOTO_REQUEST && resultCode == RESULT_OK && null != data) {
-            selectedImage = data.getData();
-           if(selectedImage != null)
-            ImagePath =  selectedImage.toString();
-           PersonImage.setImageURI(selectedImage);
-        }
-        if(requestCode == MAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
-            Bitmap thumbnailBitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
-            PersonImage.setImageBitmap(thumbnailBitmap);
-//            ImageView imageView =  getActivity().findViewById(R.id.imageViewEdit);
-//            imageView.setImageBitmap(thumbnailBitmap);
-        }
-    }
 }

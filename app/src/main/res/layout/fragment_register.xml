@@ -14,38 +14,8 @@
         android:minHeight="250dp"
         android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-
-            android:id="@+id/imageViewRegisterEdit"
-            android:layout_width="202dp"
-            android:layout_height="202dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="12dp"
-            tools:src="@tools:sample/avatars[4]"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonRegisterMakePhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="@string/make_photo" />
-
-            <Button
-                android:id="@+id/buttonRegisterChosePhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="@string/choose_photo" />
-        </LinearLayout>
-
         <TextView
+            android:layout_marginTop="60dp"
             android:id="@+id/textView25"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

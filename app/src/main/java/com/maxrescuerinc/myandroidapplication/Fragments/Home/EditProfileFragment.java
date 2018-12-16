@@ -1,6 +1,7 @@
 package com.maxrescuerinc.myandroidapplication.Fragments.Home;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,32 +9,47 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
 import com.orm.SugarRecord;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.ThemedSpinnerAdapter;
+import androidx.constraintlayout.solver.widgets.Helper;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.PathUtils;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -57,7 +73,6 @@ public class EditProfileFragment extends Fragment {
     private ImageView PersonImage = null;
     private Uri selectedImage= null;
     private View EditProfileFragmaentView;
-    String mCurrentPhotoPath;
 
 
     @Override
@@ -66,41 +81,16 @@ public class EditProfileFragment extends Fragment {
         EditProfileFragmaentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         findAllFields();
         UpdateTextView();
-        final Button makePhotoButton = inf.findViewById(R.id.buttonMakePhoto);
-        makePhotoButton.setOnClickListener(new View.OnClickListener() {
+        signUpClickMakePhoto();
+        signUpClickChoosePhoto();
+        signUpClickSave();
+       return EditProfileFragmaentView;
+    }
 
-            @Override
-            public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(getContext(),Manifest.permission.CAMERA)
-                        == PackageManager.PERMISSION_GRANTED)
-                {
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
-                }else
-                {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},MAKE_PHOTO_REQUEST);
-                }
-            }
-        });
-        final Button chooseButton = inf.findViewById(R.id.buttonChosePhoto);
-        chooseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent photoIntent = new Intent(Intent.ACTION_PICK);
-                photoIntent.setType("image/*");
-                startActivityForResult(photoIntent, LOAD_PHOTO_REQUEST);
-            }
-        });
-        Button saveButton = inf.findViewById(R.id.buttonHomePersonEditSave);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            UpdeteUserFields();
-            Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_personFragment2);
-            }
-        });
-
-       return inf;
+    private void showToast(Integer text) {
+        Toast toast = Toast.makeText(getContext(),text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
     }
 
     private void findAllFields(){
@@ -110,10 +100,51 @@ public class EditProfileFragment extends Fragment {
         Email = EditProfileFragmaentView.findViewById(R.id.editTextEmailHomeEditPerson);
         PhoneNumber = EditProfileFragmaentView.findViewById(R.id.editTextPhoneNumberHomeEditPerson);
         PersonImage = EditProfileFragmaentView.findViewById(R.id.imageViewHomeEditPerson);
-        PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
+        File file = null;
+        try {
+            file = createImageFile();
+        }
+         catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(file.exists())
+        {
+            selectedImage = Uri.fromFile(file);
+            PersonImage.setImageURI(selectedImage);
+        }else
+            PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
+    }
+
+    private File createImageFile() throws IOException {
+        Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
+        String imageFileName = "Avatar_" + user_id.toString();
+        File storageDir = EditProfileFragmaentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = new File(storageDir +"/" +imageFileName + ".jpg");
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(EditProfileFragmaentView.getContext().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                //REWORK
+                showToast(R.string.email_error);
+            }
+            if (photoFile != null) {
+                selectedImage = Uri.fromFile(photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImage);
+                startActivityForResult(takePictureIntent, MAKE_PHOTO_REQUEST);
+
+            }
+        }
     }
 
     private void signUpClickMakePhoto(){
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         Button button = EditProfileFragmaentView.findViewById(R.id.buttonMakePhoto);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +152,9 @@ public class EditProfileFragment extends Fragment {
                 if(ContextCompat.checkSelfPermission(getContext(),Manifest.permission.CAMERA)
                         == PackageManager.PERMISSION_GRANTED)
                 {
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
+                    dispatchTakePictureIntent();
+//                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
                 }else
                 {
                     requestPermissions(new String[]{Manifest.permission.CAMERA},MAKE_PHOTO_REQUEST);
@@ -131,7 +163,31 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
-    private void UpdeteUserFields(){
+    private void signUpClickChoosePhoto(){
+        Button button = EditProfileFragmaentView.findViewById(R.id.buttonChosePhoto);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoIntent = new Intent(Intent.ACTION_PICK);
+                photoIntent.setType("image/*");
+                startActivityForResult(photoIntent, LOAD_PHOTO_REQUEST);
+            }
+        });
+    }
+
+    private void signUpClickSave(){
+        Button button = EditProfileFragmaentView.findViewById(R.id.buttonHomePersonEditSave);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdateUserFields();
+                showToast(R.string.edit_successful);
+                Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_personFragment2);
+            }
+        });
+    }
+
+    private void UpdateUserFields(){
         if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID))
         {
             Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
@@ -142,10 +198,6 @@ public class EditProfileFragment extends Fragment {
                 user.Email = Email.getText().toString();
                 user.Name = Name.getText().toString();
                 user.PhoneNumber = PhoneNumber.getText().toString();
-                if(!user.URI.equals(selectedImage.toString()))
-                {
-                    user.URI = selectedImage.toString();
-                }
                 user.save();
             }
         }
@@ -162,7 +214,8 @@ public class EditProfileFragment extends Fragment {
                 Name.setText(user.Name);
                 Email.setText(user.Email);
                 PhoneNumber.setText(user.PhoneNumber);
-                PersonImage.setImageURI(Uri.parse(user.URI));
+                if(user.URI!=null)
+                    PersonImage.setImageURI(Uri.parse(user.URI));
             }
         }
     }
@@ -176,16 +229,16 @@ public class EditProfileFragment extends Fragment {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
-                 }else
-                 {
-                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                 }
+                 else {
+                     AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileFragmaentView.getContext());
                 builder.setTitle(R.string.titleWarning)
                     .setMessage(R.string.CameraPermission)
                         .setCancelable(false)
                         .setNegativeButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        ActivityCompat.requestPermissions(getActivity(),
+                                        ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()),
                                                 new String[]{Manifest.permission.CAMERA},
                                                 MAKE_PHOTO_REQUEST);
                                         dialog.cancel();
@@ -198,21 +251,6 @@ public class EditProfileFragment extends Fragment {
             }
         }
     }
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
 
 
     @Override
@@ -220,27 +258,18 @@ public class EditProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOAD_PHOTO_REQUEST && resultCode == RESULT_OK && null != data) {
             selectedImage = data.getData();
-            PersonImage.setImageURI(selectedImage);
-
-
-        }
-        if(requestCode == MAKE_PHOTO_REQUEST && resultCode == RESULT_OK)
-        {
-            Bitmap thumbnailBitmap = (Bitmap) data.getExtras().get("data");
-            PersonImage.setImageBitmap(thumbnailBitmap);
-            File file = new File("image");
-            try (OutputStream out = new FileOutputStream(file)){
-                thumbnailBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                //file = createImageFile();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImage);
+                File photoFile = createImageFile();
+                FileOutputStream fileOutputStream = new FileOutputStream(photoFile);
+                bitmap.compress(Bitmap.CompressFormat.PNG,100, fileOutputStream);
+                PersonImage.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-//            selectedImage = Uri.fromFile(file);
-//            data.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-
-//            ImageView imageView =  getActivity().findViewById(R.id.imageViewEdit);
-//            imageView.setImageBitmap(thumbnailBitmap);
+        }
+        if(requestCode == MAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
+            PersonImage.setImageURI(selectedImage);
         }
     }
 

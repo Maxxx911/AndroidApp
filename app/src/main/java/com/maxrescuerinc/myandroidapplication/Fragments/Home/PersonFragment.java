@@ -1,38 +1,32 @@
 package com.maxrescuerinc.myandroidapplication.Fragments.Home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.NavHost;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.maxrescuerinc.myandroidapplication.Activites.HomePageActivity;
 import com.maxrescuerinc.myandroidapplication.Activites.MainActivity;
 import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
 import com.orm.SugarRecord;
 
-import org.w3c.dom.Text;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
-public class PersonFragment extends Fragment implements View.OnClickListener {
+public class PersonFragment extends Fragment{
 
     private final String APP_PREFERENCES_CURRENT_USER_ID = "current_user_id";
     private final String APP_PREFERENCES = "current_user_setting";
@@ -41,23 +35,36 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     private TextView PhoneNumber = null;
     private TextView Email = null;
     private ImageView PersonImage = null;
-    SharedPreferences mSettings = null;
-
+    private SharedPreferences mSettings = null;
+    private View PersonFragmentView;
+    private Uri selectedImage= null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)  {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_person, container, false);
-        Button b = (Button) v.findViewById(R.id.button3);
-        LastName = v.findViewById(R.id.lastNameHomeView);
-        Name = v.findViewById(R.id.nameHomeView);
-        PhoneNumber = v.findViewById(R.id.phoneNumberHomeView);
-        Email = v.findViewById(R.id.emailHomeView);
-        PersonImage = v.findViewById(R.id.imageViewHomePerson);
-        mSettings = getContext().getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
-        Button signOutbutton = v.findViewById(R.id.buttonSignOut);
-        signOutbutton.setOnClickListener(new View.OnClickListener() {
+        PersonFragmentView = inflater.inflate(R.layout.fragment_person, container, false);
+        findAllFields();
+        signUpClickEdit();
+        singUpClickSignOut();
+        UpdateTextView();
+        return PersonFragmentView;
+
+    }
+
+    private void signUpClickEdit(){
+        Button button = PersonFragmentView.findViewById(R.id.button3);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(PersonFragmentView).navigate(R.id.action_personFragment2_to_editProfileFragment);
+            }
+        });
+    }
+
+    private void singUpClickSignOut(){
+        Button button = PersonFragmentView.findViewById(R.id.buttonSignOut);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID))
@@ -67,36 +74,55 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                     editor.apply();
                     Intent intent = new Intent(getActivity(),MainActivity.class);
                     startActivity(intent);
-                    getActivity().finish();
+                    Objects.requireNonNull(getActivity()).finish();
 
                 }
             }
         });
-        UpdateTextView();
-        b.setOnClickListener(this);
-        return v;
+    }
 
+    private File createImageFile() throws IOException {
+        Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
+        String imageFileName = "Avatar_" + user_id.toString();
+        File storageDir = PersonFragmentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = new File(storageDir + "/" +imageFileName + ".jpg");
+        return image;
+    }
+
+    private void findAllFields(){
+        LastName = PersonFragmentView.findViewById(R.id.lastNameHomeView);
+        Name = PersonFragmentView.findViewById(R.id.nameHomeView);
+        PhoneNumber = PersonFragmentView.findViewById(R.id.phoneNumberHomeView);
+        Email = PersonFragmentView.findViewById(R.id.emailHomeView);
+        PersonImage = PersonFragmentView.findViewById(R.id.imageViewHomePerson);
+        mSettings = Objects.requireNonNull(getContext()).getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
+        File file = null;
+        try {
+            file = createImageFile();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(file.exists())
+        {
+            selectedImage = Uri.fromFile(file);
+            PersonImage.setImageURI(selectedImage);
+        }else
+            PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
     }
 
     private void UpdateTextView(){
-        if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID))
-        {
+        if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID)){
             Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
             User user = SugarRecord.findById(User.class, user_id);
-            if(user != null)
-            {
-            LastName.setText(user.LastName);
-            Name.setText(user.Name);
-            Email.setText(user.Email);
-            PhoneNumber.setText(user.PhoneNumber);
-            PersonImage.setImageURI(Uri.parse(user.URI));
+            if(user != null) {
+                LastName.setText(user.LastName);
+                Name.setText(user.Name);
+                Email.setText(user.Email);
+                PhoneNumber.setText(user.PhoneNumber);
+                if(user.URI != null)
+                    PersonImage.setImageURI(Uri.parse(user.URI));
             }
         }
-    }
-
-    @Override
-    public void onClick(View view)
-    {
-        Navigation.findNavController(view).navigate(R.id.action_personFragment2_to_editProfileFragment);
     }
 }

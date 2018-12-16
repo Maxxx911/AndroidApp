@@ -14,101 +14,101 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="151dp"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewHomePerson"
+            android:layout_width="202dp"
+            android:layout_height="202dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="60dp"
+            tools:src="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@color/colorWhite"
+            android:onClick="onClick"
+            android:text="@string/edit_profile"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="151dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageViewHomePerson"
-                android:layout_width="202dp"
-                android:layout_height="202dp"
+            <TextView
+                android:id="@+id/nameHomeView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                tools:src="@tools:sample/avatars" />
-
-            <Button
-                android:id="@+id/button3"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
-                android:layout_height="23dp"
-                android:background="@color/colorWhite"
-                android:onClick="onClick"
-                android:text="@string/edit_profile"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/nameHomeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:text="TextView"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/lastNameHomeView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/phone_number"
-                android:textColor="@color/colorGrey"
-                android:textSize="12sp" />
+                android:text="TextView"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/phoneNumberHomeView"
+                android:id="@+id/lastNameHomeView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:text="TextView"
                 android:textAlignment="center"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="@string/email"
-                android:textColor="@color/colorGrey"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/emailHomeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/buttonSignOut"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="@string/signOut" />
-
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="@string/phone_number"
+            android:textColor="@color/colorGrey"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/phoneNumberHomeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="@string/email"
+            android:textColor="@color/colorGrey"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/emailHomeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/buttonSignOut"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/signOut" />
+
+    </LinearLayout>
     </ScrollView>

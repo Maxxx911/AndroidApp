@@ -1,7 +1,5 @@
 package com.maxrescuerinc.myandroidapplication.Models;
 
-import android.net.Uri;
-
 import com.orm.SugarRecord;
 
 public class User extends SugarRecord {
