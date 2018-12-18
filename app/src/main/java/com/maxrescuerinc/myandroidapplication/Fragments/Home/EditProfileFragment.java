@@ -1,7 +1,6 @@
 package com.maxrescuerinc.myandroidapplication.Fragments.Home;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,13 +8,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,39 +25,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.maxrescuerinc.myandroidapplication.Activites.HomePageActivity;
+import com.maxrescuerinc.myandroidapplication.Interfaces.EditProfileFragmentListener;
 import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
 import com.orm.SugarRecord;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.ThemedSpinnerAdapter;
-import androidx.constraintlayout.solver.widgets.Helper;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.graphics.PathUtils;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements EditProfileFragmentListener {
 
     private final String APP_PREFERENCES_CURRENT_USER_ID = "current_user_id";
     private final String APP_PREFERENCES = "current_user_setting";
@@ -72,19 +62,61 @@ public class EditProfileFragment extends Fragment {
     private TextView Email = null;
     private ImageView PersonImage = null;
     private Uri selectedImage= null;
-    private View EditProfileFragmaentView;
+    private View EditProfileFragmentView;
 
+    public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        EditProfileFragmaentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        EditProfileFragmentView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         findAllFields();
         UpdateTextView();
         signUpClickMakePhoto();
         signUpClickChoosePhoto();
         signUpClickSave();
-       return EditProfileFragmaentView;
+        ((HomePageActivity) getActivity()).setActivityListener(EditProfileFragment.this);
+        ((HomePageActivity) getActivity()).HideBottomNavogation();
+
+
+        return EditProfileFragmentView;
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.closed_edit_person_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.aboutFragment) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileFragmentView.getContext());
+            builder.setTitle(R.string.titleWarning)
+                    .setMessage(R.string.leave_page)
+                    .setCancelable(false)
+                    .setNegativeButton(R.string.no,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                    .setPositiveButton(R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    Navigation.findNavController(EditProfileFragmentView).navigate(R.id.action_editProfileFragment_to_personFragment2);
+                                }
+                            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }
+        return true;
+
     }
 
     private void showToast(Integer text) {
@@ -95,11 +127,11 @@ public class EditProfileFragment extends Fragment {
 
     private void findAllFields(){
         mSettings = Objects.requireNonNull(getContext()).getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
-        LastName = EditProfileFragmaentView.findViewById(R.id.editTextLastNameHomeEditPerson);
-        Name = EditProfileFragmaentView.findViewById(R.id.editTextNameHomeEditPerson);
-        Email = EditProfileFragmaentView.findViewById(R.id.editTextEmailHomeEditPerson);
-        PhoneNumber = EditProfileFragmaentView.findViewById(R.id.editTextPhoneNumberHomeEditPerson);
-        PersonImage = EditProfileFragmaentView.findViewById(R.id.imageViewHomeEditPerson);
+        LastName = EditProfileFragmentView.findViewById(R.id.editTextLastNameHomeEditPerson);
+        Name = EditProfileFragmentView.findViewById(R.id.editTextNameHomeEditPerson);
+        Email = EditProfileFragmentView.findViewById(R.id.editTextEmailHomeEditPerson);
+        PhoneNumber = EditProfileFragmentView.findViewById(R.id.editTextPhoneNumberHomeEditPerson);
+        PersonImage = EditProfileFragmentView.findViewById(R.id.imageViewHomeEditPerson);
         File file = null;
         try {
             file = createImageFile();
@@ -118,14 +150,14 @@ public class EditProfileFragment extends Fragment {
     private File createImageFile() throws IOException {
         Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
         String imageFileName = "Avatar_" + user_id.toString();
-        File storageDir = EditProfileFragmaentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = EditProfileFragmentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = new File(storageDir +"/" +imageFileName + ".jpg");
         return image;
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(EditProfileFragmaentView.getContext().getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(EditProfileFragmentView.getContext().getPackageManager()) != null) {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
@@ -145,7 +177,7 @@ public class EditProfileFragment extends Fragment {
     private void signUpClickMakePhoto(){
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        Button button = EditProfileFragmaentView.findViewById(R.id.buttonMakePhoto);
+        Button button = EditProfileFragmentView.findViewById(R.id.buttonMakePhoto);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,8 +185,7 @@ public class EditProfileFragment extends Fragment {
                         == PackageManager.PERMISSION_GRANTED)
                 {
                     dispatchTakePictureIntent();
-//                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
+
                 }else
                 {
                     requestPermissions(new String[]{Manifest.permission.CAMERA},MAKE_PHOTO_REQUEST);
@@ -164,7 +195,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void signUpClickChoosePhoto(){
-        Button button = EditProfileFragmaentView.findViewById(R.id.buttonChosePhoto);
+        Button button = EditProfileFragmentView.findViewById(R.id.buttonChosePhoto);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,13 +207,14 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void signUpClickSave(){
-        Button button = EditProfileFragmaentView.findViewById(R.id.buttonHomePersonEditSave);
+        Button button = EditProfileFragmentView.findViewById(R.id.buttonHomePersonEditSave);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UpdateUserFields();
                 showToast(R.string.edit_successful);
                 Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_personFragment2);
+                ((HomePageActivity) getActivity()).ShowBottomNavigation();
             }
         });
     }
@@ -231,7 +263,7 @@ public class EditProfileFragment extends Fragment {
                     startActivityForResult(cameraIntent, MAKE_PHOTO_REQUEST);
                  }
                  else {
-                     AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileFragmaentView.getContext());
+                     AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileFragmentView.getContext());
                 builder.setTitle(R.string.titleWarning)
                     .setMessage(R.string.CameraPermission)
                         .setCancelable(false)
@@ -253,6 +285,9 @@ public class EditProfileFragment extends Fragment {
     }
 
 
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -269,9 +304,18 @@ public class EditProfileFragment extends Fragment {
             }
         }
         if(requestCode == MAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
-            PersonImage.setImageURI(selectedImage);
+           PersonImage.setImageURI(selectedImage);
         }
     }
 
 
+    @Override
+    public void showBottomNavigation() {
+
+    }
+
+    @Override
+    public void hideBottomNavigation() {
+
+    }
 }

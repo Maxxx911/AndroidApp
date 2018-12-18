@@ -11,6 +11,7 @@
         android:icon="@drawable/person_light"
         android:id="@+id/personFragment2"   />
     <item
-        android:icon="@drawable/person_light"
-        android:title="third"/>
+        android:icon="@drawable/setting_light"
+        android:id="@+id/settingFragment"
+        android:title="@string/setting"/>
 </menu>

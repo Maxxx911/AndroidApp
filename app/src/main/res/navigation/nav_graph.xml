@@ -29,5 +29,10 @@
         android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.maxrescuerinc.myandroidapplication.Fragments.Home.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>
 

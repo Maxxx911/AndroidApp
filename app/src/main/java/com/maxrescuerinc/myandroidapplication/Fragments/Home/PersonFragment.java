@@ -85,8 +85,7 @@ public class PersonFragment extends Fragment{
         Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
         String imageFileName = "Avatar_" + user_id.toString();
         File storageDir = PersonFragmentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir + "/" +imageFileName + ".jpg");
-        return image;
+        return new File(storageDir + "/" +imageFileName + ".jpg");
     }
 
     private void findAllFields(){
@@ -96,19 +95,7 @@ public class PersonFragment extends Fragment{
         Email = PersonFragmentView.findViewById(R.id.emailHomeView);
         PersonImage = PersonFragmentView.findViewById(R.id.imageViewHomePerson);
         mSettings = Objects.requireNonNull(getContext()).getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
-        File file = null;
-        try {
-            file = createImageFile();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(file.exists())
-        {
-            selectedImage = Uri.fromFile(file);
-            PersonImage.setImageURI(selectedImage);
-        }else
-            PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
+
     }
 
     private void UpdateTextView(){
@@ -120,8 +107,19 @@ public class PersonFragment extends Fragment{
                 Name.setText(user.Name);
                 Email.setText(user.Email);
                 PhoneNumber.setText(user.PhoneNumber);
-                if(user.URI != null)
-                    PersonImage.setImageURI(Uri.parse(user.URI));
+                File file = null;
+                try {
+                    file = createImageFile();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(file.exists())
+                {
+                    selectedImage = Uri.fromFile(file);
+                    PersonImage.setImageURI(selectedImage);
+                }else
+                    PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
             }
         }
     }
