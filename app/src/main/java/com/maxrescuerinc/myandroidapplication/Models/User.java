@@ -9,6 +9,7 @@ public class User extends SugarRecord {
     public String PhoneNumber= null;
     public String URI = null;
     public String Password = null;
+    public String RssLink = null;
     public User()
     {
 

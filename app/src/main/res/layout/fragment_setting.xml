@@ -15,16 +15,16 @@
         android:layout_marginTop="60dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextWelcomeFragment"
+            android:id="@+id/editTextSettingFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/rss" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:layout_marginStart="10dp"
-        android:id="@+id/button"
+        android:id="@+id/buttonSettingFragment"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:text="@string/set" />
 </LinearLayout>

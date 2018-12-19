@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.maxrescuerinc.myandroidapplication.Activites.HomePageActivity;
+import com.maxrescuerinc.myandroidapplication.Functions.UserFunction;
 import com.maxrescuerinc.myandroidapplication.Interfaces.EditProfileFragmentListener;
 import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
@@ -55,7 +56,7 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
     private final short MY_PERMISSION_ACCESS = 111;
     final int CAMERA_ID = 0;
     final boolean FULL_SCREEN = true;
-    SharedPreferences mSettings = null;
+    private SharedPreferences mSettings = null;
     private TextView LastName = null;
     private TextView Name = null;
     private TextView PhoneNumber = null;
@@ -220,19 +221,9 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
     }
 
     private void UpdateUserFields(){
-        if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID))
-        {
-            Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
-            User user = SugarRecord.findById(User.class, user_id);
-            if(user != null)
-            {
-                user.LastName = LastName.getText().toString();
-                user.Email = Email.getText().toString();
-                user.Name = Name.getText().toString();
-                user.PhoneNumber = PhoneNumber.getText().toString();
-                user.save();
-            }
-        }
+        Long user_id = UserFunction.getIdCurrentUser(mSettings);
+        UserFunction.UpdateUser(user_id,Name.getText().toString(),LastName.getText().toString(),
+                PhoneNumber.getText().toString(),null );
     }
 
     private void UpdateTextView()  {

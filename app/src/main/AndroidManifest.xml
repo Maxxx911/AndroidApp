@@ -38,7 +38,16 @@
             android:name=".Activites.HomePageActivity"
             android:label="@string/title_activity_home_page"
             android:theme="@style/AppThemeWhite.NoActionBar" />
-        <activity android:name=".Activites.WebActivity"></activity>
+
+        <activity android:name=".Activites.WebActivity"
+            android:theme="@style/AppThemeWhite.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.maxrescuerinc.myandroidapplication.Activites.WebActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
