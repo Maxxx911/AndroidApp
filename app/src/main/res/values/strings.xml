@@ -46,6 +46,8 @@
     <string name="finish_register">Finish</string>
     <string name="next">Next</string>
     <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="go_to_about">Do you really want to go to the About page?</string>
     <string name="leave_page">Do you really want to leave the page, all unsaved data will be lost</string>
     <string name="error_rss">Enter a valid Rss feed url or check you Internet connection</string>
     <string name="setting">Setting</string>

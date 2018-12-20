@@ -24,6 +24,15 @@ public class UserFunction {
         }
     }
 
+    public static User getCurrentUser(Long userId){
+        User user = SugarRecord.findById(User.class, userId);
+        if(user!=null){
+            return user;
+        }else{
+            return null;
+        }
+    }
+
     public static void UpdateUser(Long userId, String name, String lastName, String phoneNumber, String rssLink){
         User user = SugarRecord.findById(User.class, userId);
         if(user!=null){

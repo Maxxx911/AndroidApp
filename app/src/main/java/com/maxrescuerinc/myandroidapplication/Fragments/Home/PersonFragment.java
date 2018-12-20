@@ -119,7 +119,7 @@ public class PersonFragment extends Fragment{
                     selectedImage = Uri.fromFile(file);
                     PersonImage.setImageURI(selectedImage);
                 }else
-                    PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
+                    PersonImage.setImageResource(R.drawable.default_photo);
             }
         }
     }

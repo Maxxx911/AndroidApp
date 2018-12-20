@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.maxrescuerinc.myandroidapplication.Activites.HomePageActivity;
 import com.maxrescuerinc.myandroidapplication.Models.User;
 import com.maxrescuerinc.myandroidapplication.R;
 import com.orm.SugarRecord;
@@ -83,7 +84,8 @@ public class RegisterFragment extends Fragment {
                         SharedPreferences.Editor editor = setting.edit();
                         editor.putLong(APP_PREFERENCES_CURRENT_USER_ID,userModel.getId());
                         editor.apply();
-                            Navigation.findNavController(RegisterFormView).navigate(R.id.action_registerFragment_to_selectedImageFragment);
+                        Intent intent = new Intent(getActivity(),HomePageActivity.class);
+                        startActivity(intent);
                             showToast(R.string.register_successful);
                     }
                     else{

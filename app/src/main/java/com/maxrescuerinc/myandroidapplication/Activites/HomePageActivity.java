@@ -1,5 +1,6 @@
 package com.maxrescuerinc.myandroidapplication.Activites;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.maxrescuerinc.myandroidapplication.R;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -18,6 +20,8 @@ import androidx.navigation.ui.NavigationUI;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.util.Objects;
 
 public class HomePageActivity extends AppCompatActivity  {
 
@@ -68,7 +72,27 @@ public class HomePageActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.aboutFragment) {
-            navController.navigate(R.id.aboutFragment);
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomePageActivity.this);
+            builder.setTitle(R.string.titleWarning)
+                    .setMessage(R.string.go_to_about)
+                    .setCancelable(false)
+                    .setNegativeButton(R.string.no,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            })
+                    .setPositiveButton(R.string.yes,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    navController.navigate(R.id.aboutFragment);
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
         }
         return true;
 

@@ -49,13 +49,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class EditProfileFragment extends Fragment implements EditProfileFragmentListener {
 
-    private final String APP_PREFERENCES_CURRENT_USER_ID = "current_user_id";
-    private final String APP_PREFERENCES = "current_user_setting";
     private final short MAKE_PHOTO_REQUEST = 122;
     private final short LOAD_PHOTO_REQUEST = 123;
-    private final short MY_PERMISSION_ACCESS = 111;
-    final int CAMERA_ID = 0;
-    final boolean FULL_SCREEN = true;
     private SharedPreferences mSettings = null;
     private TextView LastName = null;
     private TextView Name = null;
@@ -81,13 +76,7 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
         signUpClickSave();
         ((HomePageActivity) getActivity()).setActivityListener(EditProfileFragment.this);
         ((HomePageActivity) getActivity()).HideBottomNavogation();
-
-
         return EditProfileFragmentView;
-    }
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.closed_edit_person_menu, menu);
     }
 
     @Override
@@ -116,9 +105,11 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
             alert.show();
 
         }
-        return true;
+      return super.onOptionsItemSelected(item);
 
     }
+
+
 
     private void showToast(Integer text) {
         Toast toast = Toast.makeText(getContext(),text, Toast.LENGTH_SHORT);
@@ -127,6 +118,7 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
     }
 
     private void findAllFields(){
+        String APP_PREFERENCES = "current_user_setting";
         mSettings = Objects.requireNonNull(getContext()).getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
         LastName = EditProfileFragmentView.findViewById(R.id.editTextLastNameHomeEditPerson);
         Name = EditProfileFragmentView.findViewById(R.id.editTextNameHomeEditPerson);
@@ -145,15 +137,15 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
             selectedImage = Uri.fromFile(file);
             PersonImage.setImageURI(selectedImage);
         }else
-            PersonImage.setImageResource(R.drawable.ic_cake_black_24dp);
+            PersonImage.setImageResource(R.drawable.default_photo);
     }
 
     private File createImageFile() throws IOException {
+        String APP_PREFERENCES_CURRENT_USER_ID = "current_user_id";
         Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
         String imageFileName = "Avatar_" + user_id.toString();
         File storageDir = EditProfileFragmentView.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir +"/" +imageFileName + ".jpg");
-        return image;
+        return new File(storageDir +"/" +imageFileName + ".jpg");
     }
 
     private void dispatchTakePictureIntent() {
@@ -227,10 +219,8 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
     }
 
     private void UpdateTextView()  {
-        if(mSettings.contains(APP_PREFERENCES_CURRENT_USER_ID))
-        {
-            Long user_id = mSettings.getLong(APP_PREFERENCES_CURRENT_USER_ID,-1);
-            User user = SugarRecord.findById(User.class, user_id);
+        Long user_id = UserFunction.getIdCurrentUser(mSettings);
+        User user = UserFunction.getCurrentUser(user_id);
             if(user != null)
             {
                 LastName.setText(user.LastName);
@@ -240,8 +230,8 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
                 if(user.URI!=null)
                     PersonImage.setImageURI(Uri.parse(user.URI));
             }
-        }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -275,10 +265,6 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
         }
     }
 
-
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -299,6 +285,11 @@ public class EditProfileFragment extends Fragment implements EditProfileFragment
         }
     }
 
+
+    @Override
+    public void onBackPressed() {
+
+    }
 
     @Override
     public void showBottomNavigation() {

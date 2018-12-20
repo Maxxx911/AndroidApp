@@ -1,21 +1,14 @@
 package com.maxrescuerinc.myandroidapplication.Functions;
-
-import android.util.Log;
 import android.util.Xml;
-
 import com.maxrescuerinc.myandroidapplication.Models.NewsItem;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParseRss {
-
-    private static final String ns = null;
 
     public static List<NewsItem> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         try {
@@ -35,47 +28,19 @@ public class ParseRss {
             if (xmlPullParser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-
                 String name = xmlPullParser.getName();
             if (name.equals("channel")){
                 continue;
             }
             if(name.equals("item")){
                     items.add(ReadItem(xmlPullParser));
-                }else{
+                }
+                else{
                     skip(xmlPullParser);
                 }
             }
             return items;
         }
-
-    private static NewsItem ReadChannel(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
-       // xmlPullParser.require(XmlPullParser.START_TAG,ns,"channel");
-        String title = null;
-        String description = null;
-        String link = null;
-        String pubDate = null;
-        String mediaLink = null;
-        while (xmlPullParser.next()!= XmlPullParser.END_TAG){
-            if(xmlPullParser.getEventType()!= XmlPullParser.START_TAG){
-                continue;
-            }
-            String name = xmlPullParser.getName();
-            if(name.equals("title")){
-                title =  ReadTitle(xmlPullParser);
-            }else if(name.equals("description")){
-                description = ReadDescription(xmlPullParser);
-            }else if(name.equals("link")){
-                link = ReadLink(xmlPullParser);
-            }else if(name.equals("pubDate")){
-                pubDate = ReadPubDate(xmlPullParser);
-            }else if(name.equals("media:content")){
-                mediaLink = ReadMedia(xmlPullParser);
-            }
-        }
-        return new NewsItem(title,link,description,pubDate,mediaLink);
-    }
-
 
     private static NewsItem ReadItem(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
             String title = null;
@@ -114,7 +79,6 @@ public class ParseRss {
 
     private static String ReadMedia(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
         String mediaLink = "";
-       // xmlPullParser.require(XmlPullParser.START_TAG, ns, "media:content");
         String tag = xmlPullParser.getName();
         String relType = xmlPullParser.getAttributeValue(null, "medium");
         if (tag.equals("media:content")) {
@@ -151,26 +115,20 @@ public class ParseRss {
     }
 
     private static String ReadLink(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
-       // xmlPullParser.require(XmlPullParser.START_TAG,ns,"link");
         xmlPullParser.next();
         String link = xmlPullParser.getText();
-        //xmlPullParser.require(XmlPullParser.END_TAG,ns,"link");
         xmlPullParser.next();
         return link;
     }
 
     private static String ReadDescription(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
-        //xmlPullParser.require(XmlPullParser.START_TAG,ns,"description");
         String description = readText(xmlPullParser);
-        //xmlPullParser.require(XmlPullParser.END_TAG,ns,"description");
         xmlPullParser.next();
         return description;
     }
 
     private static String ReadTitle(XmlPullParser xmlPullParser) throws IOException, XmlPullParserException {
-        //xmlPullParser.require(XmlPullParser.START_TAG,ns,"title");
         String title = readText(xmlPullParser);
-        //xmlPullParser.require(XmlPullParser.END_TAG, ns, "title");
         xmlPullParser.next();
         return title;
     }
